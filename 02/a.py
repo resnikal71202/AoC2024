@@ -1,5 +1,7 @@
 """Day 2 Part 1."""
 
+from typing import Optional
+
 
 class Report:
     """Report class."""
@@ -8,37 +10,40 @@ class Report:
         """Init."""
         self.levels = list(map(int, filter(None, levels.split(" "))))
 
-    def check_diff(self, diff: int, dir: int) -> bool:
-        """Check if the difference is valid.
+    def is_safe(self, levels: Optional[list[int]] = None) -> bool:
+        """Check if the report is safe according to the rules.
+
+        A report is safe if the levels are either all increasing or all decreasing,
+        and any two adjacent levels differ by at least one and at most three.
 
         Args:
-            diff (int): difference between two levels.
-            dir (int): direction of the levels.
+            levels (list[int], optional): The list of levels to check. If None,
+                use self.levels.
 
         Returns:
-            bool: True if the difference is valid, False otherwise.
+            bool: True if the report is safe, False otherwise.
         """
-        if dir > 0 and (diff > 3 or diff <= 0):
-            return False
-        if dir < 0 and (diff < -3 or diff >= 0):
-            return False
-        return True
+        if levels is None:
+            levels = self.levels
 
-    def is_safe(self) -> bool:
-        """check if the Report is save.
-        The report is save if the level decreases or increases by not more than 3.
+        if len(levels) < 2:
+            # A report with fewer than 2 levels is considered safe
+            return True
 
-        Returns:
-            bool: True if the report is save, False otherwise.
-        """
-        dir = self.levels[1] - self.levels[0]
-        if dir == 0:
+        # Calculate the differences between adjacent levels
+        diffs = [levels[i + 1] - levels[i] for i in range(len(levels) - 1)]
+
+        # Check if all differences are within the allowed range (1 to 3 inclusive)
+        if not all(1 <= abs(d) <= 3 for d in diffs):
             return False
-        for i in range(len(self.levels) - 1):
-            diff = self.levels[i + 1] - self.levels[i]
-            if not self.check_diff(diff, dir):
-                return False
-        return True
+
+        # Determine the overall direction (increasing or decreasing)
+        if all(d > 0 for d in diffs):
+            return True
+        elif all(d < 0 for d in diffs):
+            return True
+        else:
+            return False
 
 
 def main() -> None:
