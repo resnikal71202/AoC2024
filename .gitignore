@@ -325,3 +325,6 @@ $RECYCLE.BIN/
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# the puzzle inputs
+**/in.txt
